@@ -1,3 +1,5 @@
+from cmath import log
+import logging
 import mimetypes
 from urllib import response
 from flask import Flask
@@ -6,14 +8,16 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
+    app.logger.info('Main request successfull')
     return "Hello World!"
 @app.route("/status")
 def status():
     response = app.response_class(
         response=json.dumps({"result":"OK - healthy"}),
         status=200,
-        mimetype='application/json'
+        mimetype='application/json',
     )
+    app.logger.info('Status request successfull')
     return response
 @app.route('/metrics')
 def metrics():
@@ -22,6 +26,8 @@ def metrics():
             status=200,
             mimetype='application/json'
     )
+    app.logger.info('Metrics request successfull')
     return response
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
+    app.logging.basicConfig(filename='app.log',level=logging.DEBUG)
